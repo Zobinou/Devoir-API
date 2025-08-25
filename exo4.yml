@@ -1,0 +1,68 @@
+
+openapi: 3.0.0
+info:
+  title: Products API
+  version: 1.0.0
+  description: Search and filter products
+servers:
+  - url: http://localhost:8000
+paths:
+  /products:
+    get:
+      description: Search products using optional parameters
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/q'
+      responses:
+        '200':
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+              examples:
+                multipleProducts:
+                  summary: Several products found
+                  value:
+                    - name: "Laptop"
+                      expiration_datetime: "2025-12-31T23:59:59Z"
+                      price: 1500.50
+                    - name: "Mouse"
+                      expiration_datetime: "2026-01-01T00:00:00Z"
+                      price: 25.99
+                emptyList:
+                  summary: No products found
+                  value: []
+
+components:
+  parameters:
+    limit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of items to return
+      schema:
+        type: integer
+      example: 10
+    q:
+      name: q
+      in: query
+      required: false
+      description: Search term
+      schema:
+        type: string
+      example: "Laptop"
+  schemas:
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+        expiration_datetime:
+          type: string
+          format: date-time
+        price:
+          type: number
+          format: float
